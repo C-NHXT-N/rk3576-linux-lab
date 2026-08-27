@@ -1,0 +1,13 @@
+[Unit]
+Description=RK3576 System Monitor
+
+[Service]
+Type=simple
+User=cat
+WorkingDirectory=/home/cat/rk3576-linux-lab/02-systemd-monitor
+ExecStart=/home/cat/rk3576-linux-lab/02-systemd-monitor/rk3576-monitor.sh
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
