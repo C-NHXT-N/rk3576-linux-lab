@@ -1,0 +1,30 @@
+execve("./write_lab", ["./write_lab"], 0x7fd5c786e0 /* 60 vars */) = 0
+brk(NULL)                               = 0x559c954000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f8b33d000
+faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+newfstatat(3, "", {st_mode=S_IFREG|0644, st_size=71560, ...}, AT_EMPTY_PATH) = 0
+mmap(NULL, 71560, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f8b2f6000
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\360u\2\0\0\0\0\0"..., 832) = 832
+newfstatat(3, "", {st_mode=S_IFREG|0755, st_size=1661968, ...}, AT_EMPTY_PATH) = 0
+mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f8b137000
+mmap(0x7f8b140000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x7f8b140000
+munmap(0x7f8b137000, 36864)             = 0
+munmap(0x7f8b2ef000, 28264)             = 0
+mprotect(0x7f8b2ce000, 61440, PROT_NONE) = 0
+mmap(0x7f8b2dd000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0x7f8b2dd000
+mmap(0x7f8b2e3000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f8b2e3000
+close(3)                                = 0
+set_tid_address(0x7f8b33df50)           = 8227
+set_robust_list(0x7f8b33df60, 24)       = 0
+rseq(0x7f8b33e620, 0x20, 0, 0xd428bc00) = 0
+mprotect(0x7f8b2dd000, 16384, PROT_READ) = 0
+mprotect(0x5577790000, 4096, PROT_READ) = 0
+mprotect(0x7f8b342000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+munmap(0x7f8b2f6000, 71560)             = 0
+write(1, "Hello via write()\n", 18)     = 18
+exit_group(0)                           = ?
++++ exited with 0 +++
