@@ -1,0 +1,7 @@
+# Install torch 2.2.0+cpu and torchvision 0.17.0+cpu from the CPU index first.
+# Install the fixed Toolkit2 wheel separately (fetch_sdk.py --role host).
+ultralytics==8.4.192
+numpy==1.26.4
+onnx==1.18.0
+onnxruntime==1.23.2
+opencv-python==4.11.0.86

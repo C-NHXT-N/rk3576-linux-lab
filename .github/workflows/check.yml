@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 C-NHXT-N and contributors
+name: Check Markdown and labs
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Markdown links and lesson structure
+        run: python3 tools/check_docs.py
+      - name: Check shell syntax
+        run: find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -r -n1 bash -n
+      - name: Build C++ examples
+        run: bash tools/build_labs.sh
+      - name: Test portable behavior and error paths
+        env:
+          PYTHONUTF8: '1'
+        run: |
+          python3 -m pip install numpy==1.26.4 opencv-python-headless==4.10.0.84
+          python3 -m unittest discover -s tests -v
+      - name: Check compiled examples
+        run: python3 tools/check_lab.py programming

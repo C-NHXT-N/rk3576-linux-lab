@@ -1,13 +1,16 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 C-NHXT-N and contributors
 [Unit]
-Description=RK3576 System Monitor
+Description=RK3576 System Monitor (course lab)
 
 [Service]
 Type=simple
-User=cat
-WorkingDirectory=/home/cat/rk3576-linux-lab/02-systemd-monitor
-ExecStart=/home/cat/rk3576-linux-lab/02-systemd-monitor/rk3576-monitor.sh
+User=@USER@
+WorkingDirectory=@PROJECT_DIR@
+ExecStart=/usr/bin/bash @PROJECT_DIR@/rk3576-monitor.sh
 Restart=on-failure
 RestartSec=3
+TimeoutStopSec=10
 
 [Install]
 WantedBy=multi-user.target

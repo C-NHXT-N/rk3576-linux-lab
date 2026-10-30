@@ -1,0 +1,10 @@
+{
+  "model": "models/yolo26n-rk3576-fp16.rknn",
+  "image": "models/bus.jpg",
+  "frames": 1,
+  "interval": 1,
+  "score_threshold": 0.25,
+  "topk": 300,
+  "output_dir": "run/vision",
+  "health": "run/health.json"
+}
