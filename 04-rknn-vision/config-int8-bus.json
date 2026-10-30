@@ -1,1 +1,0 @@
-{"model": "models/yolo26n-rk3576-int8.rknn", "image": "models/bus.jpg", "frames": 3, "interval": 0.1, "output_dir": "run/int8-bus", "health": "run/int8-bus/health.json"}
