@@ -18,7 +18,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--weights', type=Path, default=Path('models/yolo26n.pt'))
     parser.add_argument('--output', type=Path, default=Path('models/yolo26n.onnx'))
+    parser.add_argument('--batch', type=int, default=1)
     args = parser.parse_args()
+    if args.batch < 1:
+        parser.error('batch must be positive')
     args.weights.parent.mkdir(parents=True, exist_ok=True)
     if not args.weights.exists():
         with urllib.request.urlopen(WEIGHTS_URL, timeout=60) as response, args.weights.open('wb') as destination:
@@ -33,7 +36,7 @@ def main():
         if ultralytics.__version__ != '8.4.192':
             parser.error('Use ultralytics==8.4.192; output node names are version-specific.')
         output = Path(YOLO(str(args.weights.resolve())).export(
-            format='onnx', imgsz=640, batch=1, opset=17, dynamic=False,
+            format='onnx', imgsz=640, batch=args.batch, opset=17, dynamic=False,
             simplify=False, device='cpu', nms=False))
         args.output.parent.mkdir(parents=True, exist_ok=True)
         if output.resolve() != args.output.resolve():

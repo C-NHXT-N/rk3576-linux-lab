@@ -33,6 +33,7 @@
 - [systemd 监控](02-systemd-monitor/README.md)：有限采集、温度缺失处理、信号与生命周期。
 - [Linux 系统编程](03-linux-system-programming/README.md)：process、write、pipe 与 mmap。
 - [RKNN 视觉参考项目](04-rknn-vision/README.md)：静态图片 → 量化对比 → 服务。
+- [RK3576 YOLO26n 结项记录](docs/rk3576-results.md) · [最终视频复验](docs/experiment.md)
 
 ## 在板上检查
 

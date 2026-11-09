@@ -71,7 +71,8 @@ def postprocess(outputs, transform, threshold=0.25, topk=300):
     if score_output.shape[0] == 0:
         return []
     classes = np.argmax(score_output, axis=1)
-    scores = np.max(score_output, axis=1)
+    # Reuse argmax instead of scanning all class scores a second time.
+    scores = score_output[np.arange(score_output.shape[0]), classes]
     candidates = np.flatnonzero(scores > threshold)
     order = candidates[np.argsort(-scores[candidates], kind='stable')[:topk]]
     results = []
@@ -89,11 +90,54 @@ def postprocess(outputs, transform, threshold=0.25, topk=300):
     return results
 
 
+def preprocess_batch(images, batch_size=None, out=None):
+    """Keep the exact single-image preprocessing; pad only the last batch."""
+    if not images:
+        raise ValueError('Cannot preprocess an empty batch.')
+    batch_size = len(images) if batch_size is None else batch_size
+    if batch_size < len(images):
+        raise ValueError('Batch capacity is smaller than the valid image count.')
+    shape = (batch_size, SIZE, SIZE, 3)
+    batch = np.empty(shape, dtype=np.uint8) if out is None else out
+    if batch.shape != shape or batch.dtype != np.uint8 or not batch.flags.c_contiguous:
+        raise ValueError('Preallocated batch must be contiguous RGB uint8 with matching shape.')
+    transforms = []
+    for index, image in enumerate(images):
+        prepared, transform = preprocess(image)
+        batch[index] = prepared[0]
+        transforms.append(transform)
+    batch[len(images):] = batch[len(images)-1]
+    return batch, transforms
+
+
+def postprocess_batch(outputs, transforms, batch_size, threshold=0.25, topk=300):
+    """Each valid slot has its own TopK, coordinates and original metadata."""
+    if not isinstance(outputs, (list, tuple)) or len(outputs) != 2:
+        raise ValueError('Expected two complete batched outputs.')
+    arrays = [np.asarray(output) for output in outputs]
+    if not 0 < len(transforms) <= batch_size or any(
+            array.ndim != 3 or array.shape[0] != batch_size for array in arrays):
+        raise ValueError('Model output batch does not match the requested batch.')
+    return [postprocess([array[index:index+1] for array in arrays], transform, threshold, topk)
+            for index, transform in enumerate(transforms)]
+
+
 def annotate(image, detections):
     rendered = image.copy()
+    # BGR, stable across frames; keep original object pixels unmodified.
+    palette = [(220, 210, 40), (90, 210, 245), (100, 190, 255),
+               (220, 120, 200), (130, 220, 120), (100, 125, 250)]
+    height, width = image.shape[:2]
+    thickness = max(2, round(width / 640))
+    scale = max(.45, width / 1800)
     for item in detections:
         x1, y1, x2, y2 = (int(round(value)) for value in item['xyxy'])
-        cv2.rectangle(rendered, (x1, y1), (x2, y2), (0, 200, 0), 2)
+        color = palette[item['class_id'] % len(palette)]
+        cv2.rectangle(rendered, (x1, y1), (min(width-1, x2), min(height-1, y2)), color, thickness, cv2.LINE_AA)
         label = f"{item['name']} {item['confidence']:.2f}"
-        cv2.putText(rendered, label, (x1, max(15, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 200, 0), 1)
+        (tw, th), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, scale, 1)
+        lx = max(0, min(x1, width-tw-10))
+        ly = max(th+10, min(height-baseline-1, y1-4))
+        cv2.rectangle(rendered, (lx, ly-th-7), (min(width-1, lx+tw+9), ly+baseline), color, -1)
+        cv2.putText(rendered, label, (lx+4, ly-3), cv2.FONT_HERSHEY_SIMPLEX, scale, (18, 24, 32), 1, cv2.LINE_AA)
     return rendered

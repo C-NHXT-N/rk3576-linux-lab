@@ -13,15 +13,45 @@ bash run.sh --config config.json
 
 先按环境课准备项目 Runtime、虚拟环境、模型和图片。--check 不初始化 NPU。入口只使用真实 RKNN Lite；加载后核对 /proc 映射，防止误用系统旧库。
 
-## 源码与产物
+## 最终视频版
 
-- fetch_sdk.py：固定 SDK 下载与 SHA256 校验，不安装。
-- export_model.py：固定 YOLO26n 权重、Ultralytics 版本和 opset 17，CPU 导出。
-- convert.py：固定 rk3576、640×640 和官方两路输出，--dataset 指定 INT8 校准列表，否则 FP16。
-- prepare_calibration.py：固定 COCO20 来源、letterbox 和校准清单。
-- detector.py：RGB/letterbox、one-to-one 阈值与 TopK、坐标还原及画框。
-- vision.py：配置、真实 NPU、JSON/标注图、健康状态和资源释放。
+唯一交付配置为 YOLO26n FP16 640×640。板端的 `run/delivery/night.mp4` 和 `day.mp4` 是最近验收的两段 B 版成片。
 
-默认结果为 run/vision/result.jpg、result.json，心跳为 run/health.json。有限处理结束为 stopped；持续模式只重复同一静态图片，不是实时视频。旧 labels/camera 配置需迁移，类别使用内置 COCO80。
+从新克隆复验时，先完成模型转换课，将 FP16 的 `yolo26n-rk3576-fp16.rknn` 和同名 `.json` 转换清单放到板端项目的 `models/`。板端还需要教程环境中的 Python、项目 Runtime，以及 BSP 提供的 Rockchip MPP 库和开发头文件。用以下命令获取固定版本的 RKNN C API 头文件，并执行下文的原生库构建。
 
-真实环境、模型哈希、转换问题与测试限制见[验证记录](../docs/validation.md)。模型、SDK、虚拟环境和个人输出不提交 Git。相机和跨重启未验证，不属于当前通过项。
+```bash
+.venv/bin/python fetch_sdk.py --role header
+```
+
+如果板端无法访问 GitHub，可在电脑端的项目目录运行 `python fetch_sdk.py --role header`，再把下载的 `third_party/rknn_api.h` 复制到板端同一位置。原生构建会再次核对文件哈希。
+
+准备两段 H.264、YUV420、1280×720、30 FPS、各 1050 帧的输入。结项记录给出了原素材链接和截取位置。假设你已从原页面取得素材并存成 `night-source.mp4` 和 `day-source.mp4`，可在有 FFmpeg 的机器上用下面的命令准备输入，再放到板端相同的相对路径。
+
+```bash
+mkdir -p run/video-input
+filters='fps=30,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p'
+ffmpeg -i night-source.mp4 -vf "$filters" -frames:v 1050 -an -c:v libx264 run/video-input/test-720p30.mp4
+ffmpeg -ss 10 -i day-source.mp4 -vf "$filters" -frames:v 1050 -an -c:v libx264 run/video-input/day-720p30.mp4
+```
+
+在板端用独立的 OpenCV 解码和 RKNN Lite 推理为这两段输入生成本地参考。已有参照会保留。新参照记录视频和模型的 SHA256，供复验检查。更换输入或模型时，把旧参照移出 `run/reference/` 后重新生成。
+
+```bash
+.venv/bin/python prepare_video_reference.py
+```
+
+在板端进入本目录，以下命令会在新目录中写入复验结果。
+
+```bash
+.venv/bin/python experiment.py verify --output run/verify-YYYYMMDD-HHMMSS
+```
+
+复验按同一配置完整处理昼夜各 1050 帧。输出目录中的 `final.json` 记录帧数、逐帧结果、EOS、缓冲归还及吞吐。
+
+以下命令在板端重建原生库。
+
+```bash
+.venv/bin/python -c 'import cpu_preprocess,native_mpp,native_post,native_rknn,native_output; cpu_preprocess.build(); native_mpp.build(); native_post.build(); native_rknn.build(); native_output.build()'
+```
+
+板端的 FFmpeg 源码压缩包供离线重建。历次性能和质量对照见 [结项记录](../docs/rk3576-results.md)。

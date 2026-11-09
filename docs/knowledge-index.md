@@ -32,3 +32,5 @@
 | RGB/NHWC、letterbox、阈值、TopK、坐标还原 | [模型约定](07-rknn/01-conversion.md) | [推理链路](07-rknn/02-inference.md) | [服务](08-deployment/01-vision-service.md) |
 | 配置、健康、故障恢复、性能指标 | [监控服务](04-services/04-systemd.md) | [视觉部署](08-deployment/01-vision-service.md) | [最终验收](validation.md) |
 | RKNN 板端安装、私有 Runtime、首次检测 | [硬件检查](06-hardware/02-camera-npu.md) | [环境搭建](07-rknn/00-environment.md) | [YOLO26n 实测](yolo26-validation.md) |
+| 视频流水线、稳定 FPS、逐核资源与效果图 | [系统观察](03-process/01-system-observation.md) | [视频测试扩展](experiment.md) | [视觉部署](08-deployment/01-vision-service.md) |
+| FP16 NPU 上下文、融合预处理与硬件编码 | [视频复验](experiment.md) | [结项记录](rk3576-results.md) | [视觉部署](08-deployment/01-vision-service.md) |

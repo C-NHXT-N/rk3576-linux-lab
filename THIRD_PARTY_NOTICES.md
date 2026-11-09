@@ -20,6 +20,7 @@
 - 来源：https://github.com/airockchip/rknn-toolkit2/tree/v2.5.0
 - 许可：https://github.com/airockchip/rknn-toolkit2/blob/v2.5.0/LICENSE （RKNN SDK License，包含专有条款，不能当作 Apache/MIT 开源许可）
 - 使用范围：Toolkit2、Lite2、librknnrt.so 由使用者从上游下载和安装；fetch_sdk.py 仅核对固定文件哈希，未附带 SDK 文件。
+- C API 头文件由使用者通过 `fetch_sdk.py --role header` 从同一固定版本获取。源码仓库提供来源和校验值。
 - Runtime 适配只在当前进程内改变固定版本库解析，不修改 SDK 安装文件或系统库。遵守 SDK 原许可，本文不重新授权 SDK，也不授权逆向或移除上游声明。
 
 ## 通用依赖与标准协议

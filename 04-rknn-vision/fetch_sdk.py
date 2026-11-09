@@ -10,6 +10,8 @@ import urllib.request
 
 BASE = 'https://raw.githubusercontent.com/airockchip/rknn-toolkit2/v2.5.0/'
 ASSETS = {
+    'header': [('rknpu2/runtime/Linux/librknn_api/include/rknn_api.h',
+                '2d4160cd868efd7b83a72587e411c16d6972da5876e067bd73665cea778ce666')],
     'host': [('rknn-toolkit2/packages/x86_64/rknn_toolkit2-2.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl', '7dead4048d60f9cf29dc6017cf0f1dbb30f5f1d4f227c5e2e6739d9fe3e5eec6')],
     'board': [('rknn-toolkit-lite2/packages/rknn_toolkit_lite2-2.5.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl', '57a5a1f967ff88a1f933abc15a64cf11db37fb406c00cb610f20a566ec231161'),
               ('rknpu2/runtime/Linux/librknn_api/aarch64/librknnrt.so', '4b6cc575bedf8952b13db4b1190fa3b3d2ac213f00be774ff6ccd19d651970c0')],
@@ -18,8 +20,10 @@ ASSETS = {
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--role', choices=ASSETS, required=True)
-    parser.add_argument('--output', type=Path, default=Path('runtime'))
+    parser.add_argument('--output', type=Path)
     args = parser.parse_args()
+    if args.output is None:
+        args.output = Path('third_party' if args.role == 'header' else 'runtime')
     args.output.mkdir(parents=True, exist_ok=True)
     for source, expected in ASSETS[args.role]:
         target = args.output / Path(source).name

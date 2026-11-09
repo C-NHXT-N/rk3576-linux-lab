@@ -21,3 +21,5 @@ files 默认检查 `~/rk3576-practice/files`，可用 --workspace 指定其他�
 service 源文件为模板，必须先渲染到 run 下，审阅后再由读者安装。渲染器拒绝包含特殊字符的仓库路径，便于保持本课程的 systemd 路径规则可解释。
 
 [课程目录](../docs/README.md) · [写作规范](../CONTRIBUTING.md)
+
+板端视频复验见[视觉项目说明](../04-rknn-vision/README.md)。
