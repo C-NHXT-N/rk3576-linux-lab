@@ -17,7 +17,7 @@ def main():
     args = parser.parse_args()
     if not re.fullmatch(r'[a-z_][a-z0-9_-]*[$]?', args.user):
         parser.error('Use a normal Linux account name.')
-    folder, name = ('02-systemd-monitor', 'rk3576-monitor') if args.project == 'monitor' else ('04-rknn-vision', 'rk3576-vision')
+    folder, name = ('projects/02-systemd-monitor', 'rk3576-monitor') if args.project == 'monitor' else ('projects/04-rknn-vision', 'rk3576-vision')
     project = ROOT / folder
     if not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(project)):
         parser.error('For this lab, use an absolute repository path without spaces, %, or shell metacharacters.')

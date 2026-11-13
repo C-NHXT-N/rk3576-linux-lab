@@ -4,7 +4,7 @@ from pathlib import Path
 import threading
 from types import SimpleNamespace
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'04-rknn-vision'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'projects/04-rknn-vision'))
 try:
  import native_rknn as nr
  import experiment

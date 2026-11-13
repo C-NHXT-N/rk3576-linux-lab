@@ -13,7 +13,7 @@ import unittest
 from unittest import mock
 
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'04-rknn-vision'))
+sys.path.insert(0,str(ROOT/'projects/04-rknn-vision'))
 try:
     import cv2
     import numpy as np
@@ -25,7 +25,7 @@ except ImportError:
 
 
 @unittest.skipIf(cv2 is None or not shutil.which('g++'),'Requires Linux C++/NumPy/OpenCV')
-@unittest.skipUnless((ROOT/'04-rknn-vision/third_party/rknn_api.h').is_file(),
+@unittest.skipUnless((ROOT/'projects/04-rknn-vision/third_party/rknn_api.h').is_file(),
                      'Fetch the official RKNN C header to run the native Runtime tests')
 class NativeRuntimeTests(unittest.TestCase):
     @classmethod
@@ -33,7 +33,7 @@ class NativeRuntimeTests(unittest.TestCase):
         cls.temp=tempfile.TemporaryDirectory()
         cls.library=Path(cls.temp.name)/'fake_rknn.so'
         subprocess.run(['g++','-std=c++17','-O2','-shared','-fPIC','-pthread',
-            '-I'+str(ROOT/'04-rknn-vision/third_party'),str(ROOT/'tests/fixtures/fake_rknn.cpp'),
+            '-I'+str(ROOT/'projects/04-rknn-vision/third_party'),str(ROOT/'tests/fixtures/fake_rknn.cpp'),
             '-o',str(cls.library)],check=True)
         native.build();cls.lib=native.load();cls.fixture=ct.CDLL(str(cls.library))
 

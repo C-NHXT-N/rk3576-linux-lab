@@ -6,7 +6,7 @@ import tempfile
 import time
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'04-rknn-vision'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'projects/04-rknn-vision'))
 import bench_support
 
 

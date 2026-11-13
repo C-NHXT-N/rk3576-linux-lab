@@ -8,7 +8,7 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT/'04-rknn-vision'))
+sys.path.insert(0, str(ROOT/'projects/04-rknn-vision'))
 try:
     import cv2
     import numpy as np

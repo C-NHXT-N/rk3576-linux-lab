@@ -7,7 +7,7 @@ import threading
 import unittest
 from unittest import mock
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'04-rknn-vision'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'projects/04-rknn-vision'))
 try:
     import numpy as np
     import media_backends as media
