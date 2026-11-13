@@ -49,7 +49,7 @@ python3 tools/check_lab.py programming
 
 文件与服务等检查入口见[工具说明](tools/README.md)。课程服务统一使用带 `-lab` 的名称，避免覆盖原有业务服务。源码模板必须先渲染，不能直接安装。
 
-贡献前阅读[写作与验证规范](CONTRIBUTING.md)。后续专题与建设状态见[路线图](docs/roadmap.md)。本仓库当前只使用 Markdown，没有网站构建或发布流程。
+后续专题与建设状态见[路线图](docs/roadmap.md)。本仓库当前只使用 Markdown，没有网站构建或发布流程。
 
 
 ## 开源协议

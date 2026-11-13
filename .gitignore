@@ -19,3 +19,4 @@ calibration/
 *.a
 03-linux-system-programming/process_lab
 03-linux-system-programming/write_lab
+/CONTRIBUTING.md
