@@ -3,6 +3,7 @@
 # Copyright (c) 2026 C-NHXT-N and contributors
 """Check local Markdown targets, heading fragments, fences and lesson navigation."""
 from pathlib import Path
+import os
 import re
 import sys
 from urllib.parse import unquote, urlsplit
@@ -43,7 +44,12 @@ def anchors(text):
 
 def main():
     errors = []
-    files = sorted(p for p in ROOT.rglob('*.md') if not any(part in {'.git', '.venv', 'build', 'run', 'models'} for part in p.relative_to(ROOT).parts))
+    files = []
+    excluded = {'.git', '.venv', '.venv-convert', '__pycache__', 'build', 'run', 'models', 'runtime', 'calibration'}
+    for folder, directories, names in os.walk(ROOT):
+        directories[:] = [name for name in directories if name not in excluded]
+        files.extend(Path(folder) / name for name in names if name.endswith('.md'))
+    files.sort()
     for file in files:
         try:
             text = file.read_text(encoding='utf-8')
@@ -62,7 +68,7 @@ def main():
                     errors.append(f'{file.relative_to(ROOT)}: missing target: {target}')
                 elif url.fragment and dest.suffix == '.md' and unquote(url.fragment) not in anchors(dest.read_text(encoding='utf-8')):
                     errors.append(f'{file.relative_to(ROOT)}: missing heading: {target}')
-            if file.parent.parent.name == 'docs' and re.match(r'^\d\d-', file.parent.name):
+            if file.parent.parent == ROOT and re.match(r'^\d\d-', file.parent.name):
                 for required in ['## 这课完成什么', '## 自己完成一次', '## 完成标准', '## 清理与回顾', '上一课', '下一课']:
                     if required not in text:
                         errors.append(f'{file.relative_to(ROOT)}: missing lesson element: {required}')

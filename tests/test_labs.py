@@ -15,7 +15,7 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
-MONITOR = ROOT / '02-systemd-monitor/rk3576-monitor.sh'
+MONITOR = ROOT / 'projects/02-systemd-monitor/rk3576-monitor.sh'
 
 
 def temporary_directory():
@@ -80,7 +80,7 @@ class MonitorTests(unittest.TestCase):
                 process.communicate()
 
     def test_report_sections_and_errors(self):
-        report = str(ROOT / '01-system-inspector/system_report.sh')
+        report = str(ROOT / 'projects/01-system-inspector/system_report.sh')
         result = execute('bash', report, '--section', 'identity')
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('Architecture:', result.stdout)
@@ -92,7 +92,7 @@ class MonitorTests(unittest.TestCase):
 class VisionConfigurationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        spec = importlib.util.spec_from_file_location('vision', ROOT / '04-rknn-vision/vision.py')
+        spec = importlib.util.spec_from_file_location('vision', ROOT / 'projects/04-rknn-vision/vision.py')
         cls.module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.module)
 

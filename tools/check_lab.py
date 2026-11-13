@@ -24,7 +24,7 @@ def main():
     parser.add_argument('lab', choices=['environment', 'files', 'inspector', 'monitor', 'programming', 'vision'])
     parser.add_argument('--workspace', type=Path, default=Path.home() / 'rk3576-practice' / 'files')
     parser.add_argument('--unit', default='rk3576-monitor-lab.service')
-    parser.add_argument('--health', type=Path, default=ROOT / '04-rknn-vision/run/health.json')
+    parser.add_argument('--health', type=Path, default=ROOT / 'projects/04-rknn-vision/run/health.json')
     args = parser.parse_args()
     checks = []
     def check(ok, label, hint):
@@ -34,7 +34,7 @@ def main():
 
     if args.lab == 'environment':
         for name in ['bash', 'python3', 'git', 'uname', 'ip', 'ss', 'findmnt', 'free', 'g++', 'strace']:
-            check(shutil.which(name), name, f'查看 docs/environment.md，安装或定位 {name}。')
+            check(shutil.which(name), name, f'查看 docs/reference/environment.md，安装或定位 {name}。')
         check(sys.platform.startswith('linux'), 'Linux host', '请在开发板终端执行。')
     elif args.lab == 'files':
         root = args.workspace.expanduser()
@@ -46,7 +46,7 @@ def main():
         check(link.is_symlink() and link.resolve() == source.resolve() and link.exists(), 'symbolic link', '在练习根目录运行 ln -s notes/hello.txt hello-link。')
         check(source.is_file() and (source.stat().st_mode & 0o777) == 0o640, 'mode 640', '对练习文件执行 chmod 640，随后用 ls -l 检查。')
     elif args.lab == 'inspector':
-        result = command('bash', str(ROOT / '01-system-inspector/system_report.sh'))
+        result = command('bash', str(ROOT / 'projects/01-system-inspector/system_report.sh'))
         check(result.returncode == 0, 'report exits successfully', result.stderr or '先运行报告，查看哪个必需命令失败。')
         for title in ['SYSTEM', 'CPU', 'MEMORY', 'STORAGE', 'NETWORK', 'PROCESS', 'DEVICES']:
             check(f'========== {title} ==========' in result.stdout, f'{title} section', '从项目源码入口对照检查报告结构。')

@@ -9,6 +9,6 @@ for pair in "${sources[@]}"; do
     source_name=${pair%%:*}
     output_name=${pair##*:}
     g++ -std=c++17 -Wall -Wextra -Werror -O0 -g \
-        "$repo_dir/03-linux-system-programming/$source_name.cpp" -o "$repo_dir/build/$output_name"
+        "$repo_dir/projects/03-linux-system-programming/$source_name.cpp" -o "$repo_dir/build/$output_name"
 done
 printf 'Built four labs in %s/build\n' "$repo_dir"
